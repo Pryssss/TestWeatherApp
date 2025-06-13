@@ -68,7 +68,7 @@ struct DetailView: View {
         }
         .task { viewModel.load() }
     }
-    
+
     private var forecastList: some View {
         VStack(spacing: 12) {
             ForEach(viewModel.dailyForecasts as [DailyForecast], id: \.id) { forecast in
@@ -109,23 +109,3 @@ struct WeatherIconView: View {
         return Image(systemName: symbol)
     }
 }
-
-struct DayLabelView: View {
-    let rawDate: String
-    var body: some View {
-        Text(Self.displayDay(from: rawDate))
-    }
-    private static func displayDay(from rawDate: String) -> String {
-        let formatter = DateFormatter()
-        formatter.dateFormat = "yyyy-MM-dd"
-        guard let date = formatter.date(from: rawDate) else { return rawDate }
-        if Calendar.current.isDateInToday(date) {
-            return "Today"
-        } else {
-            let weekdayFormatter = DateFormatter()
-            weekdayFormatter.dateFormat = "EEEE"
-            return weekdayFormatter.string(from: date)
-        }
-    }
-}
-

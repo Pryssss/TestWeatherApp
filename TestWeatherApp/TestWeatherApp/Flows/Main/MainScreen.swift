@@ -4,7 +4,6 @@
 //
 //  Created by Markiyan Prysiazhniuk on 12.06.2025.
 //
-
 import SwiftUI
 
 struct CityWeatherRow: View {
@@ -16,10 +15,12 @@ struct CityWeatherRow: View {
             Text(cityWeather.city)
                 .font(.title3.bold())
                 .foregroundColor(.black)
+                .accessibilityLabel(cityWeather.city)
             Spacer()
             Text(cityWeather.temperature)
                 .font(.title3.bold())
                 .foregroundColor(.blue)
+                .accessibilityLabel("\(cityWeather.temperature)")
         }
         .padding()
         .background(
@@ -38,7 +39,7 @@ struct CityWeatherRow: View {
 struct MainScreen: View {
     @ObservedObject var viewModel: WeatherViewModel
     var onSelectCity: (CityWeather) -> Void = { _ in }
-    
+
     var body: some View {
         ZStack {
             LinearGradient(colors: [.blue.opacity(0.45), .white], startPoint: .top, endPoint: .bottom)
@@ -58,14 +59,16 @@ struct MainScreen: View {
                     } else {
                         ScrollView {
                             LazyVStack(spacing: 12) {
-                                ForEach(viewModel.cityWeathers, id: \.city) { cityWeather in
+                                ForEach(viewModel.cityWeathers, id: \.id) { cityWeather in
                                     CityWeatherRow(cityWeather: cityWeather) { selectedCityWeather in
-                                        // Trigger navigation or other UI response.
                                         onSelectCity(selectedCityWeather)
                                     }
                                     .transition(.scale.combined(with: .opacity))
                                 }
                             }
+                        }
+                        .refreshable {
+                            viewModel.load(forceReload: true)
                         }
                     }
                     Button("Reload") {

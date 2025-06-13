@@ -6,15 +6,8 @@
 //
 
 import Foundation
-import SwiftUI
 import Combine
-
-struct DailyForecast: Identifiable, Equatable {
-    let id = UUID()
-    let date: String
-    let iconName: String
-    let temperature: String
-}
+import SwiftUI
 
 class DetailViewModel<Forecast: Identifiable & Equatable>: ObservableObject {
     @Published private(set) var city: String
@@ -27,14 +20,14 @@ class DetailViewModel<Forecast: Identifiable & Equatable>: ObservableObject {
     private let weatherAPI: WeatherAPIProtocol
     private let lat: Double
     private let lon: Double
-    private let forecastMapper: (WeatherResponse) -> [Forecast]
+    private let forecastMapper: @Sendable (WeatherResponse) -> [Forecast]
 
     init(
         city: String,
         lat: Double,
         lon: Double,
         weatherAPI: WeatherAPIProtocol = WeatherAPI(networking: DefaultNetworking()),
-        forecastMapper: @escaping (WeatherResponse) -> [Forecast]
+        forecastMapper: @escaping @Sendable (WeatherResponse) -> [Forecast]
     ) {
         self.city = city
         self.lat = lat
@@ -84,5 +77,4 @@ class DetailViewModel<Forecast: Identifiable & Equatable>: ObservableObject {
     }
 }
 
-// Provide concrete Forecast typealias for use in SwiftUI. For example:
 typealias DefaultDetailViewModel = DetailViewModel<DailyForecast>
