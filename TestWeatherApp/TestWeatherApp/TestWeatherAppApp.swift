@@ -9,9 +9,11 @@ import SwiftUI
 
 @main
 struct TestWeatherAppApp: App {
+    @StateObject private var coordinator = SimpleCoordinator()
+    
     var body: some Scene {
         WindowGroup {
-            ContentView()
+            MainNavigationView(coordinator: coordinator)
         }
     }
 }
